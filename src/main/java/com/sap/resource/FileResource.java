@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,14 +121,14 @@ public class FileResource {
 		}
 	}
 
-	private FileMetaData buildFileMetaData(String filename, int startByte, int endByte, int part, String cdn_url) {
+	private FileMetaData buildFileMetaData(String filename, int startByte, int endByte, int part, String cdnurl, String repurl) {
 		FileMetaData fileMeta = new FileMetaData();
 		fileMeta.setId(UUID.randomUUID().toString());
 		fileMeta.setName(filename);
 		fileMeta.setOwner("me");
-		fileMeta.setCdnUrl(cdn_url);
+		fileMeta.setCdnUrl(cdnurl);
 		//Ideally some other location to me mentioned
-		fileMeta.setReplicationUrls(cdn_url);
+		fileMeta.setReplicationUrls(repurl);
 		fileMeta.setCreateDate(Calendar.getInstance().getTime());
 		fileMeta.setModifyDate(Calendar.getInstance().getTime());
 		fileMeta.setStartByte(startByte);
@@ -139,9 +140,12 @@ public class FileResource {
 	private String uploadFile() {
 		String currentDir = Paths.get(".").toAbsolutePath().normalize().toString();
 
-		String dir = currentDir + "/data/";
+		String srcdir = currentDir + "/data/";
+		String cdndir1 = currentDir + "/cdn1/";
+		String cdndir2 = currentDir + "/cdn2/";
+
 		String filename = "test";
-		File file = new File(dir + filename);
+		File file = new File(srcdir + filename);
 		long length = file.length();
 		int chunksize = (int) (length / 2);
 		int readBytes = 0;
@@ -155,13 +159,12 @@ public class FileResource {
 			byte[] data = new byte[chunksize];
 			while ((readBytes = in.read(data, 0, chunksize)) != -1) {
 				endByte = startByte + readBytes;
-				String cdn_url = dir + "part_" + part;
-				FileMetaData fd = buildFileMetaData(storageFileName, startByte, endByte, part++, cdn_url);
-				BufferedOutputStream buf = new BufferedOutputStream(new FileOutputStream(cdn_url));
-				buf.write(data);
+				String cdnUrl = writeToCDN(cdndir1, storageFileName, part, data);
+				String repUrl = writeToCDN(cdndir2, storageFileName, part, data);
+				part++;
+				FileMetaData fd = buildFileMetaData(storageFileName, startByte, endByte, part, cdnUrl, repUrl);
 				fileMetaDataRepository.save(fd);
 				startByte = endByte + 1;
-				buf.close();
 				readBytes = 0;
 			}
 			in.close();
@@ -171,6 +174,14 @@ public class FileResource {
 		return "FileName : " + storageFileName + " : Parts " + part + ": " ;
 	}
 	
+	public String writeToCDN(String cdndir, String filename, int part, byte[] data) throws IOException{
+		String cdn_url = cdndir + filename+ "_" + part;
+		BufferedOutputStream buf = new BufferedOutputStream(new FileOutputStream(cdn_url));
+		buf.write(data);
+		buf.close();
+		return cdn_url;
+	}
+
 	private byte[] tryReadFromRedundantLocation(){
 		//This is dummy representing accessing file part from redundant location 
 		return new byte [10];
