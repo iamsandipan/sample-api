@@ -51,7 +51,7 @@ Prerequisites:
 --------------
 1. Set up a My SQL DB in your local or a reachable server.Create a schema
 
-CREATE SCHEMA shhemaname DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA shemaname DEFAULT CHARACTER SET utf8 ;
 
 Add appropriate privilege for the user to run DDLs.For this demo purpose
 you may give the user all priviledges. 
