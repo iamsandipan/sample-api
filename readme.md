@@ -15,8 +15,10 @@ For demo purpose you may run this app from within the eclipse. Thats the best to
 Assumptions and Thinking:
 ------------------------
 
-This is not a full fledged app with validations,security etc. its a demo to show how to setup such a project and how to give an understanding of turning this into a scalable soluti
+This is not a full fledged app with validations,security etc. its a demo to show how to setup such a project and how to give an understanding of turning this into a scalable solution
 
+Scalability And Durability:
+---------------------------
 The assumption behind this is: we will be able to download parts of a file from distributed 
 locations, aggregate them and recreate the original file.
 
@@ -27,9 +29,16 @@ In this example the upload api is just a dummy and it creates two parts of a fil
 upload. for the sake of simplicity i have copied them in the same folder, and also inserted the 
 trackable information in the DB.
 
-Once download request is received, the DB is consulted and all the parts are fetched and 
+Once download request is received, the DB is queries and all the parts are fetched and 
 aggregated to get the whole file.Ideally the fetching will be from geographically separated
 servers to fulfill the scalability and fault tolerance and durability features
+
+The durability may be achieved by setting up systems to copy the same file part in different 
+geographical locations.
+
+High Availability:
+------------------
+High Availability can be achieved by multiple api instance under a load balancer configuration.
 
 
 How to run the App.
