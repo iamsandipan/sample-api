@@ -67,11 +67,12 @@ spring.datasource.password=your password
 
 Run the App:
 ------------
-
-1. Run from within eclipse com.sap.resource.Application.java
-2. Once server has started successfully. Open a Firefox Browser . and type
+1.mvn clean install //do this either from within the eclipse or any ide
+2. Run from within eclipse com.sap.resource.Application.java
+3. Once server has started successfully. Open a Firefox Browser . and type
 http://localhost:8080/swagger-ui.html .This will open up a swagger documentation of the APIs.
 
-I ... Do a dummy Upload to break a file into parts. Will send a figure to show the Architecture in mind
-II ... Download using the Swagger interface
+I ... Do a dummy Upload to break a file into parts. I will send a figure to show the Architecture in mind
+II ... Download using the Swagger interface/postman or curl. You will see the curl command on the swagger UI.
+
 Check the video:-
