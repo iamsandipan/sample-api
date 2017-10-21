@@ -65,7 +65,7 @@ spring.datasource.username=your username
 spring.datasource.password=your password
 
 
-Run the App:
+Run the App in Local:
 ------------
 1.mvn clean install //do this either from within the eclipse or any ide
 2. Run from within eclipse com.sap.resource.Application.java
