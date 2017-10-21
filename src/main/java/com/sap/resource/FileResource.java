@@ -50,7 +50,7 @@ public class FileResource {
 		try {
 			for (FileMetaData file : files) {
 				fileName = file.getName();
-				bout.write(readfilePartFromLocation(file.getCdnUrl()));
+				bout.write(readfilePartFromLocation(file.getCdnUrl(), file.getReplicationUrls()));
 			}
 			resp.setContentType("application/octet-stream");
 			resp.setHeader("Content-Disposition", String.format("inline; filename=\"" + fileName + "\""));
@@ -72,7 +72,7 @@ public class FileResource {
 			try {
 					FileMetaData fmd = fileMd.get();
 					fileName = fmd.getName();
-					bout.write(readfilePartFromLocation(fmd.getCdnUrl()));
+					bout.write(readfilePartFromLocation(fmd.getCdnUrl(), fmd.getReplicationUrls()));
 					resp.setContentType("application/octet-stream");
 					resp.setHeader("Content-Disposition", String.format("inline; filename=\"" + fileName + "\""));
 					resp.getOutputStream().write(bout.toByteArray());
@@ -105,7 +105,7 @@ public class FileResource {
 		return Optional.empty();
 	}
 
-	private byte[] readfilePartFromLocation(String cdnUrl) throws IOException {
+	private byte[] readfilePartFromLocation(String cdnUrl, String repUrl) throws IOException {
 		File f = new File(cdnUrl);
 		if(f.exists()){
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(f));
@@ -117,7 +117,7 @@ public class FileResource {
 		}else{
 			////This is dummy representing accessing file part from redundant location 
 
-			return tryReadFromRedundantLocation();
+			return tryReadFromRedundantLocation(repUrl);
 		}
 	}
 
@@ -182,8 +182,14 @@ public class FileResource {
 		return cdn_url;
 	}
 
-	private byte[] tryReadFromRedundantLocation(){
+	private byte[] tryReadFromRedundantLocation(String repUrl) throws IOException{
 		//This is dummy representing accessing file part from redundant location 
-		return new byte [10];
+		File f = new File(repUrl);
+
+		InputStream  inputStream = new BufferedInputStream(new FileInputStream(repUrl));
+		byte[] fileBytes = new byte[(int) f.length()];
+		inputStream.read(fileBytes, 0, (int) f.length() - 1);
+		inputStream.close();
+		return fileBytes;
 	}
 }
