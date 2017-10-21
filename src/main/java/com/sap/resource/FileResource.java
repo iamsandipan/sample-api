@@ -106,11 +106,18 @@ public class FileResource {
 
 	private byte[] readfilePartFromLocation(String cdnUrl) throws IOException {
 		File f = new File(cdnUrl);
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(f));
-		byte[] fileBytes = new byte[(int) f.length()];
-		inputStream.read(fileBytes, 0, (int) f.length() - 1);
-		inputStream.close();
-		return fileBytes;
+		if(f.exists()){
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(f));
+			byte[] fileBytes = new byte[(int) f.length()];
+			inputStream.read(fileBytes, 0, (int) f.length() - 1);
+			inputStream.close();
+			return fileBytes;
+
+		}else{
+			////This is dummy representing accessing file part from redundant location 
+
+			return tryReadFromRedundantLocation();
+		}
 	}
 
 	private FileMetaData buildFileMetaData(String filename, int startByte, int endByte, int part, String cdn_url) {
@@ -160,5 +167,10 @@ public class FileResource {
 			e.printStackTrace();
 		}
 		return "FileName : " + filename + " : Parts " + part + ": " ;
+	}
+	
+	private byte[] tryReadFromRedundantLocation(){
+		//This is dummy representing accessing file part from redundant location 
+		return new byte [10];
 	}
 }
