@@ -76,3 +76,12 @@ I ... Do a dummy Upload to break a file into parts. I will send a figure to show
 II ... Download using the Swagger interface/postman or curl. You will see the curl command on the swagger UI.
 
 Check the video:-
+
+How it works:
+-------------
+The dummy upload api splits a file in two parts and upload them in two cdn aka directory here
+Makes entry to DB 
+
+Downloading api downloads the files from the primary cdn aka directory
+If not found in primary cdn it tries to find it in the secondary cdn(not tested coded only)
+for simplicity purpose the code store file parts or sequences in the same cdn 
