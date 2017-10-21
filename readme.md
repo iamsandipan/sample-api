@@ -1,4 +1,4 @@
-Scalable File Download App
+Distributed File Download App
 --------------------------
 Set up :
 --------
