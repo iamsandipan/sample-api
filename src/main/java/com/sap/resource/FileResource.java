@@ -137,7 +137,7 @@ public class FileResource {
 	}
 
 	private String uploadFile() {
-		 String currentDir = Paths.get(".").toAbsolutePath().normalize().toString();
+		String currentDir = Paths.get(".").toAbsolutePath().normalize().toString();
 
 		String dir = currentDir + "/data/";
 		String filename = "test";
@@ -148,15 +148,15 @@ public class FileResource {
 		int startByte = 0;
 		int endByte = 0;
 		int part = 0;
+		String storageFileName = UUID.randomUUID().toString();
 
 		try {
-			
 			InputStream in = new FileInputStream(file);
 			byte[] data = new byte[chunksize];
 			while ((readBytes = in.read(data, 0, chunksize)) != -1) {
 				endByte = startByte + readBytes;
 				String cdn_url = dir + "part_" + part;
-				FileMetaData fd = buildFileMetaData(filename, startByte, endByte, part++, cdn_url);
+				FileMetaData fd = buildFileMetaData(storageFileName, startByte, endByte, part++, cdn_url);
 				BufferedOutputStream buf = new BufferedOutputStream(new FileOutputStream(cdn_url));
 				buf.write(data);
 				fileMetaDataRepository.save(fd);
@@ -168,7 +168,7 @@ public class FileResource {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "FileName : " + filename + " : Parts " + part + ": " ;
+		return "FileName : " + storageFileName + " : Parts " + part + ": " ;
 	}
 	
 	private byte[] tryReadFromRedundantLocation(){
