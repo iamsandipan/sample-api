@@ -79,7 +79,8 @@ Check the video:-
 
 How it works:
 -------------
-The dummy upload api splits a file in two parts and upload them in two cdn aka directory here
+The dummy upload api splits a file in two parts and upload them in two cdn aka directory here.
+
 Makes entry to DB 
 
 Downloading api downloads the files from the primary cdn aka directory
