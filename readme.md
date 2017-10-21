@@ -2,7 +2,7 @@ Scalable File Download App
 
 Set up :
 --------
-1. Fork the repo.
+1. Fork the repo.After forking the repo you will have a personal copy of the code
 2. Clone the repo to your local computer
 
 Once downloaded. You may import it in eclipse. 
