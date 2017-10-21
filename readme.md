@@ -40,7 +40,7 @@ High Availability and Fault Tolerance:
 ------------------------------------
 High Availability can be achieved by multiple api instance under a load balancer configuration.
 
-Security,Encryption, Authentication Authentication:
+Security,Encryption, Authentication, Authorization:
 --------------------------------------------------
 Not in this scope but may be discussed.
 
