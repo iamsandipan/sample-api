@@ -24,6 +24,8 @@ public class FileMetaData {
     private String name;
     
     private String cdn_url;
+    
+    private String replicationUrls;
 
     private Date create_date;
     
@@ -117,6 +119,14 @@ public class FileMetaData {
 
 	public void setSeq(Integer seq) {
 		this.seq = seq;
+	}
+
+	public String getReplicationUrls() {
+		return replicationUrls;
+	}
+
+	public void setReplicationUrls(String replicationUrls) {
+		this.replicationUrls = replicationUrls;
 	}
 
 }

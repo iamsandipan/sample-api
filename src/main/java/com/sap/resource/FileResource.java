@@ -126,6 +126,8 @@ public class FileResource {
 		fileMeta.setName(filename);
 		fileMeta.setOwner("me");
 		fileMeta.setCdnUrl(cdn_url);
+		//Ideally some other location to me mentioned
+		fileMeta.setReplicationUrls(cdn_url);
 		fileMeta.setCreateDate(Calendar.getInstance().getTime());
 		fileMeta.setModifyDate(Calendar.getInstance().getTime());
 		fileMeta.setStartByte(startByte);
