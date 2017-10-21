@@ -36,9 +36,13 @@ servers to fulfill the scalability and fault tolerance and durability features
 The durability may be achieved by setting up systems to copy the same file part in different 
 geographical locations.
 
-High Availability:
-------------------
+High Availability and Fault Tolerance:
+------------------------------------
 High Availability can be achieved by multiple api instance under a load balancer configuration.
+
+Security,Encryption, Authentication Authentication:
+--------------------------------------------------
+Not in this scope but may be discussed.
 
 
 How to run the App.
