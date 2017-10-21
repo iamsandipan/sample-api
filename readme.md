@@ -23,11 +23,11 @@ locations, aggregate them and recreate the original file.
 During upload multipart request, each part will be stored in physically separated locations,
 with a or more table to track the location of the parts 
 
-In this example the upload api is just a dummy and it creates two parts of a file immitating the
+In this example the upload api is just a dummy and it creates two parts of a file imitating the
 upload. for the sake of simplicity i have copied them in the same folder, and also inserted the 
 trackable information in the DB.
 
-Once downoad request is received, the DB is consulted and all the parts are fetched and 
+Once download request is received, the DB is consulted and all the parts are fetched and 
 aggregated to get the whole file.Ideally the fetching will be from geographically separated
 servers to fulfill the scalability and fault tolerance and durability features
 
@@ -36,8 +36,14 @@ How to run the App.
 ------------------
 Prerequisites:
 --------------
-1. Set up a My SQL DB in your local or a reachable server.
-2. Change the following in application.properties according to your setup:-
+1. Set up a My SQL DB in your local or a reachable server.Create a schema
+
+CREATE SCHEMA shhemaname DEFAULT CHARACTER SET utf8 ;
+
+Add appropriate privilege for the user to run DDLs.For this demo purpose
+you may give the user all priviledges. 
+
+2. Change the following in src/main/resources/application.properties according to your setup:-
 
 spring.datasource.url=jdbc:mysql://localhost:3306/schemaname
 
