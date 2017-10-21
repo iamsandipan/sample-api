@@ -15,6 +15,8 @@ For demo purpose you may run this app from within the eclipse. Thats the best to
 Assumption: This is not a full fledged app with validations,security etc. its a demo to show how to setup such a project and how to give an understanding of turning this into a scalable solution.
 
 Assumptions and Thinking
+
+
 The assumption behind this is: we will be able to download parts of a file from distributed 
 locations, aggregate them and recreate the original file.
 
