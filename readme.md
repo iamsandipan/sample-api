@@ -39,11 +39,11 @@ Prerequisites:
 1. Set up a My SQL DB in your local or a reachable server.
 2. Change the following in application.properties according to your setup:-
 
-spring.datasource.url=jdbc:mysql://localhost:3306/<<your schema name>>
+spring.datasource.url=jdbc:mysql://localhost:3306/<your schema name>
 
-spring.datasource.username=<<username>>
+spring.datasource.username=<username>
 
-spring.datasource.password=<<password>>
+spring.datasource.password=<password>
 
 
 Run the App:
