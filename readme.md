@@ -9,13 +9,13 @@ Once downloaded. You may import it in eclipse.
 
 For simplicity I have not included instructions for creating a fat jar. 
 
-
 For demo purpose you may run this app from within the eclipse. Thats the best to see the demo.
 
-Assumption: This is not a full fledged app with validations,security etc. its a demo to show how to setup such a project and how to give an understanding of turning this into a scalable solution.
 
-Assumptions and Thinking
+Assumptions and Thinking:
+------------------------
 
+This is not a full fledged app with validations,security etc. its a demo to show how to setup such a project and how to give an understanding of turning this into a scalable soluti
 
 The assumption behind this is: we will be able to download parts of a file from distributed 
 locations, aggregate them and recreate the original file.
@@ -33,7 +33,9 @@ servers to fulfill the scalability and fault tolerance and durability features
 
 
 How to run the App.
-Prerequisites
+------------------
+Prerequisites:
+--------------
 1. Set up a My SQL DB in your local or a reachable server.
 2. Change the following in application.properties according to your setup:-
 
@@ -42,7 +44,8 @@ spring.datasource.username=<<username>>
 spring.datasource.password=<<password>>
 
 
-Run the App
+Run the App:
+------------
 
 1. Run from within eclipse com.sap.resource.Application.java
 2. Once server has started successfully. Open a Firefox Browser . and type
