@@ -26,10 +26,10 @@ During upload multipart request, each part will be stored in physically separate
 with a or more table to track the location of the parts 
 
 In this example the upload api is just a dummy and it creates two parts of a file imitating the
-upload. for the sake of simplicity i have copied them in the same folder, and also inserted the 
+upload. For the sake of simplicity I have copied them in the cdn1 and cdn2 folder, and also inserted the 
 trackable information in the DB.
 
-Once download request is received, the DB is queries and all the parts are fetched and 
+Once download request is received, the DB is queried and all the parts are fetched and 
 aggregated to get the whole file.Ideally the fetching will be from geographically separated
 servers to fulfill the scalability and fault tolerance and durability features
 
@@ -86,3 +86,7 @@ Makes entry to DB
 Downloading api downloads the files from the primary cdn aka directory
 If not found in primary cdn it tries to find it in the secondary cdn(not tested coded only)
 for simplicity purpose the code store file parts or sequences in the same cdn 
+
+After starting the application make a dummy upload by calling the upload api. The dummyupload will return a
+file name and the number of parts. Then use the file name to download the whole file or a part of the file.
+
