@@ -45,6 +45,7 @@ public class FileDownloadResource {
 		startProcess();
 	}
 
+	@Async
 	public void startProcess() throws InterruptedException, ExecutionException {
 
 		List<FileDownloadTracker> files = fileDownloadTrackerRepository.findFilesWithStatus("NOT_STARTED",
@@ -63,8 +64,7 @@ public class FileDownloadResource {
 		try {
 			List<FileDownloadTracker> trackers = new ArrayList<FileDownloadTracker>(100);
 			long maxFileNum = 0;
-			int pageNum = 0;
-			List<UserFile> userfiles = userFileRepository.findNextFiles(0, new PageRequest(pageNum, 10));
+			List<UserFile> userfiles = userFileRepository.findNextFiles(0, new PageRequest(0, 10));
 			while (!userfiles.isEmpty()) {
 				for (int i = 0; i < userfiles.size(); i++) {
 					UserFile file = userfiles.get(i);
@@ -80,7 +80,6 @@ public class FileDownloadResource {
 				if (trackers.size() > 0) {
 					fileDownloadTrackerRepository.save(trackers);
 				}
-				pageNum +=1;
 				userfiles = userFileRepository.findNextFiles(maxFileNum, new PageRequest(0, 10));
 			}
 		} catch (Exception e1) {
