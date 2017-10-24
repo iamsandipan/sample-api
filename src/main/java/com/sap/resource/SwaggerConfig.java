@@ -29,8 +29,7 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 
-		return new ApiInfoBuilder().title("File Download Example")
-				.description("Example API reference for developers")
+		return new ApiInfoBuilder().title("File Download Example").description("Example API reference for developers")
 				.termsOfServiceUrl("http://www.yahoo.com")
 				.licenseUrl("https://github.com/springfox/springfox/blob/master/LICENSE").version("1.0").build();
 

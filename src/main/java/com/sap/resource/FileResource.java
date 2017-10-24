@@ -39,12 +39,13 @@ public class FileResource {
 	@Autowired
 	private FileMetaDataRepository fileMetaDataRepository;
 
+	@Autowired
+	private UserFileRepository userFileRepository;
+
 	@RequestMapping(value = "/download/file/{name}", method = RequestMethod.GET)
 	public void getFileByName(HttpServletResponse resp, @PathVariable String name) {
-		System.out.println(name);
 		List<FileMetaData> files = fileMetaDataRepository.findByName(name);
 		Collections.sort(files, new SequenceComparator());
-		System.out.println(files.size());
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		String fileName = "";
 		try {
@@ -62,28 +63,25 @@ public class FileResource {
 
 	@RequestMapping(value = "/download/file/{name}/part/{seq}", method = RequestMethod.GET)
 	public void getFileByNameAndPart(HttpServletResponse resp, @PathVariable String name, @PathVariable Integer seq) {
-		System.out.println(name);
-		System.out.println(seq);
 
 		Optional<FileMetaData> fileMd = getFileMetadataForPart(name, seq);
-		if(fileMd.isPresent()){
+		if (fileMd.isPresent()) {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			String fileName = "";
 			try {
-					FileMetaData fmd = fileMd.get();
-					fileName = fmd.getName();
-					bout.write(readfilePartFromLocation(fmd.getCdnUrl(), fmd.getReplicationUrls()));
-					resp.setContentType("application/octet-stream");
-					resp.setHeader("Content-Disposition", String.format("inline; filename=\"" + fileName + "\""));
-					resp.getOutputStream().write(bout.toByteArray());
+				FileMetaData fmd = fileMd.get();
+				fileName = fmd.getName();
+				bout.write(readfilePartFromLocation(fmd.getCdnUrl(), fmd.getReplicationUrls()));
+				resp.setContentType("application/octet-stream");
+				resp.setHeader("Content-Disposition", String.format("inline; filename=\"" + fileName + "\""));
+				resp.getOutputStream().write(bout.toByteArray());
 			} catch (Exception e) {
 				resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.ordinal());
 			}
 		}
-		
+
 	}
 
-	
 	/*
 	 * Upload a dummy file by calling this url
 	 * 
@@ -95,10 +93,10 @@ public class FileResource {
 		resp.setStatus(200);
 	}
 
-	private Optional<FileMetaData> getFileMetadataForPart(String name, int seq){
+	private Optional<FileMetaData> getFileMetadataForPart(String name, int seq) {
 		List<FileMetaData> files = fileMetaDataRepository.findByName(name);
-		for(FileMetaData metadata: files){
-			if(metadata.getSeq() == seq){
+		for (FileMetaData metadata : files) {
+			if (metadata.getSeq() == seq) {
 				return Optional.of(metadata);
 			}
 		}
@@ -107,27 +105,29 @@ public class FileResource {
 
 	private byte[] readfilePartFromLocation(String cdnUrl, String repUrl) throws IOException {
 		File f = new File(cdnUrl);
-		if(f.exists()){
+		if (f.exists()) {
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(f));
 			byte[] fileBytes = new byte[(int) f.length()];
 			inputStream.read(fileBytes, 0, (int) f.length() - 1);
 			inputStream.close();
 			return fileBytes;
 
-		}else{
-			////This is dummy representing accessing file part from redundant location 
+		} else {
+			//// This is dummy representing accessing file part from redundant
+			//// location
 
 			return tryReadFromRedundantLocation(repUrl);
 		}
 	}
 
-	private FileMetaData buildFileMetaData(String filename, int startByte, int endByte, int part, String cdnurl, String repurl) {
+	private FileMetaData buildFileMetaData(String filename, int startByte, int endByte, int part, String cdnurl,
+			String repurl) {
 		FileMetaData fileMeta = new FileMetaData();
 		fileMeta.setId(UUID.randomUUID().toString());
 		fileMeta.setName(filename);
 		fileMeta.setOwner("me");
 		fileMeta.setCdnUrl(cdnurl);
-		//Ideally some other location to me mentioned
+		// Ideally some other location to me mentioned
 		fileMeta.setReplicationUrls(repurl);
 		fileMeta.setCreateDate(Calendar.getInstance().getTime());
 		fileMeta.setModifyDate(Calendar.getInstance().getTime());
@@ -155,10 +155,17 @@ public class FileResource {
 		String storageFileName = UUID.randomUUID().toString();
 
 		try {
+
+			for (int i = 0; i < 100; i++) {
+				UserFile f = new UserFile(UUID.randomUUID().toString(), storageFileName, "me", i);
+				userFileRepository.save(f);
+			}
+
 			InputStream in = new FileInputStream(file);
 			byte[] data = new byte[chunksize];
 			while ((readBytes = in.read(data, 0, chunksize)) != -1) {
 				endByte = startByte + readBytes;
+
 				String cdnUrl = writeToCDN(cdndir1, storageFileName, part, data);
 				String repUrl = writeToCDN(cdndir2, storageFileName, part, data);
 				part++;
@@ -168,25 +175,27 @@ public class FileResource {
 				readBytes = 0;
 			}
 			in.close();
+			return "FileName : " + storageFileName + " : Parts " + part + ": ";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "FileName : " + storageFileName + " : Parts " + part + ": " ;
+		return "No file created";
 	}
-	
-	public String writeToCDN(String cdndir, String filename, int part, byte[] data) throws IOException{
-		String cdn_url = cdndir + filename+ "_" + part;
+
+	public String writeToCDN(String cdndir, String filename, int part, byte[] data) throws IOException {
+		String cdn_url = cdndir + filename + "_" + part;
 		BufferedOutputStream buf = new BufferedOutputStream(new FileOutputStream(cdn_url));
 		buf.write(data);
 		buf.close();
 		return cdn_url;
 	}
 
-	private byte[] tryReadFromRedundantLocation(String repUrl) throws IOException{
-		//This is dummy representing accessing file part from redundant location 
+	private byte[] tryReadFromRedundantLocation(String repUrl) throws IOException {
+		// This is dummy representing accessing file part from redundant
+		// location
 		File f = new File(repUrl);
 
-		InputStream  inputStream = new BufferedInputStream(new FileInputStream(repUrl));
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(repUrl));
 		byte[] fileBytes = new byte[(int) f.length()];
 		inputStream.read(fileBytes, 0, (int) f.length() - 1);
 		inputStream.close();
