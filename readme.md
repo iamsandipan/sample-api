@@ -1,5 +1,21 @@
 Distributed File Download App
 --------------------------
+
+New Code
+--------
+Set up 
+Run the Application.java
+Once Started the Application will do dummy upload to a directory cdn1 and make the MySQl tables ready.
+It will simulate an upload of 100 files all pointing to the same file. For simplicity all the entries 
+will point to the same file.
+
+To start the download process hit the url 
+
+curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/download/files'
+
+it will download the files to the "download" directoryw
+
+
 Set up :
 --------
 1. Fork the repo.After forking the repo you will have a personal copy of the code
