@@ -89,19 +89,7 @@ public class FileDownloadResource {
 
 				if (trackers.size() > 0) {
 					//Not sure if this is a transaction it needs to be 
-					boolean success = false;
-					while(!success){
-						try{
-							if(retry > 3){
-								throw new RuntimeException("Unable to insert in local db, Exiting");
-							}
-							fileDownloadTrackerRepository.save(trackers);
-							success = true;
-						}catch(Exception e){
-							retry ++;
-						}
-
-					}
+					saveTrackers(retry, trackers);
 				}
 				userfiles = downloadFileInfo(maxFileNum, 10);
 			}
@@ -109,6 +97,22 @@ public class FileDownloadResource {
 			e1.printStackTrace();
 			throw e1;
 		}
+	}
+
+	private int saveTrackers(int retry, List<FileDownloadTracker> trackers) {
+		boolean success = false;
+		while(!success){
+			try{
+				if(retry > 3){
+					throw new RuntimeException("Unable to insert in local db, Exiting");
+				}
+				fileDownloadTrackerRepository.save(trackers);
+				success = true;
+			}catch(Exception e){
+				retry ++;
+			}
+		}
+		return retry;
 	}
 
 	private FileDownloadTracker buildTracker(UserFile file) {
@@ -138,7 +142,7 @@ public class FileDownloadResource {
 		fileDownloadTrackerRepository.save(fileTracker);
 	}
 
-	private List<UserFile> downloadFileInfo(long startFileNum, int count) {
+	private List<UserFile> downloadFileInfo(long startFileNum, int count) throws InterruptedException {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -146,6 +150,15 @@ public class FileDownloadResource {
 
 		String url = "http://localhost:8080/api/download/file/" + startFileNum + "/count/"+ count;
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+		int retryCount = 0;
+		while((response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) && (retryCount < 3)){
+			response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			Thread.sleep(10000);
+			retryCount ++;
+		}
+		if(retryCount >= 3){
+			throw new RuntimeException("Unresponsive api");
+		}
 		String str = response.getBody();
 		UserFile[] files =  new Gson().fromJson(str,  UserFile[].class);
 		return Arrays.asList(files) ;
