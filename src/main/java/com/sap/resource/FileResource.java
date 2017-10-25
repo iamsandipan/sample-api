@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +20,14 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping(value = "/api")
@@ -41,6 +45,21 @@ public class FileResource {
 
 	@Autowired
 	private UserFileRepository userFileRepository;
+	
+	@RequestMapping(value = "/download/file/{startFileNum}/count/{count}", method = RequestMethod.GET)
+	public void getFileInfo(HttpServletResponse resp, @PathVariable int startFileNum, @PathVariable String count ) throws IOException {
+		try{
+			resp.setContentType("application/json");
+			resp.setStatus(HttpStatus.OK.value());
+			List<UserFile> files = userFileRepository.findNextFiles(startFileNum, new PageRequest(0, 10));
+			String str = new Gson().toJson(files);
+			resp.getWriter().write(str);
+		}catch(Exception e){
+			resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			resp.getWriter().write("");
+		}
+	}
+	
 
 	@RequestMapping(value = "/download/file/{name}", method = RequestMethod.GET)
 	public void getFileByName(HttpServletResponse resp, @PathVariable String name) {
@@ -57,7 +76,7 @@ public class FileResource {
 			resp.setHeader("Content-Disposition", String.format("inline; filename=\"" + fileName + "\""));
 			resp.getOutputStream().write(bout.toByteArray());
 		} catch (Exception e) {
-			resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.ordinal());
+			resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 	}
 
