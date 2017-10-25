@@ -78,6 +78,7 @@ public class FileDownloadResource {
 		try {
 			List<FileDownloadTracker> trackers = new ArrayList<FileDownloadTracker>(100);
 			long maxFileNum = 0;
+			//Call API to list files
 			List<UserFile> userfiles = downloadFileInfo(0, 10);
 			while (!userfiles.isEmpty()) {
 				for (int i = 0; i < userfiles.size(); i++) {
